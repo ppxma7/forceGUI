@@ -1,0 +1,35 @@
+function dataStruct = loadData_redo(filepath)
+    S = load(filepath);   % <-- return EVERYTHING
+    S.alreadyProcessed = true;
+
+    % we need a check for older analysed data that hasnt been
+    % analysed using my app
+
+    if isfield(S,'startMax')
+
+        keyboard
+
+        dataStruct.Segments.Ramp1 = [S.startMin S.stopMin];
+        dataStruct.Segments.Ramp2 = [S.startMax S.stopMax];
+        dataStruct.Segments.Plateau = [dataStruct.dataStruct.stopMin+1 dataStruct.startMax-1];
+        dataStruct.PerfFilt = dataStruct.force_trace_filtered;
+        dataStruct.forcewave = S.PerfFilt(S.Segments.Plateau(1):S.Segments.Plateau(2));
+
+
+       
+
+
+
+
+    else
+        dataStruct = S;
+    end
+
+    keyboard
+
+
+
+
+
+
+end
