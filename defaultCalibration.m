@@ -24,6 +24,7 @@ function Calib = defaultCalibration()
 
      % --- DERBY CHAIR ---
     % Single scale factor for both TRAP and MCON
-    Calib.derby.scale = 0.1823;
+    %Calib.derby.scale = 0.1823;
+    Calib.derby.scale = 208;
 
 end
