@@ -1,27 +1,24 @@
 function dataStruct = loadData_derby(filepath)
 
-    S = load(filepath);
+S = load(filepath);
 
-    if isfield(S,'Data')
+likelyChannel = 66;
+
+if isfield(S,'Data')
+    if iscell(S.Data)
         test = S.Data{1};
-        force = test(:,66); % very bad magic numbering, consequence of export from OTLab. Will likely break
-
+        force = test(:,likelyChannel);
     else
-        force = S.FORCE(:);  
+        force = S.Data(:,likelyChannel);
     end
-    % elseif isstruct(S.Data)
-    %     test = S.Data;
-    % else
-    %     error('Unexpected format for S.Data');
-    % end
+else
+    force = S.FORCE(:);
+end
 
-    % FORCE is a single vector
-    %force = S.FORCE(:);   % ensure column
+dataStruct.Force   = force;   % treat as performance trace
+dataStruct.Target = [];      % no target
+dataStruct.fs     = 2048;    % fixed sampling rate
 
-    dataStruct.Force   = force;   % treat as performance trace
-    dataStruct.Target = [];      % no target
-    dataStruct.fs     = 2048;    % fixed sampling rate
-
-    % Store raw for calibration
-    dataStruct.RawForce = force;
+% Store raw for calibration
+dataStruct.RawForce = force;
 end
