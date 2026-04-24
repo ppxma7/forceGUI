@@ -2,6 +2,7 @@ function dataStruct = loadData_derby(filepath)
 
 S = load(filepath);
 
+% Dont like this but it's a consequence of exporting in some scenarios
 likelyChannel = 66;
 
 if isfield(S,'Data')

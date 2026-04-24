@@ -9,10 +9,18 @@ function dataStruct = loadData_redo(filepath)
         dataStruct.Segments.Ramp1 = [S.startMin S.stopMin];
         dataStruct.Segments.Ramp2 = [S.startMax S.stopMax];
         dataStruct.Segments.Plateau = [S.stopMin+1 S.startMax-1];
-
+        
+        % very specific naming could break things
         if isfield(S,'force_trace_filtered')
             dataStruct.PerfFilt = S.force_trace_filtered;
             dataStruct.Data.Force = S.force_trace_unfiltered;
+        elseif isfield(S,'PerfFilt') % could be MCON
+            dataStruct.PerfFilt = S.PerfFilt;
+            dataStruct.Data.Force = S.Perf; % scaling issue
+            dataStruct.Data.Target = S.Target;
+            dataStruct.TargetFilt = S.TargetFilt;
+            dataStruct.targetwave = dataStruct.TargetFilt(dataStruct.Segments.Plateau(1):dataStruct.Segments.Plateau(2));
+
         else
             error('cant find correct force variable')
         end
