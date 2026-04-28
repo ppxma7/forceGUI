@@ -43,9 +43,9 @@ if isfield(S,'Data')
     if iscell(S.Data)
         block = S.Data{1};
         dataStruct.Force  = block(:,1);
-        dataStruct.Acq    = block(:,2);
-        dataStruct.Perf   = block(:,3);
-        dataStruct.Target = block(:,4);
+        if size(block,2) >= 2, dataStruct.Acq    = block(:,2); end
+        if size(block,2) >= 3, dataStruct.Perf   = block(:,3); end
+        if size(block,2) >= 4, dataStruct.Target = block(:,4); end
 
     else
         dataStruct.Force  = S.Data(:,likelyForce);

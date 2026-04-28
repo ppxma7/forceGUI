@@ -24,9 +24,8 @@ end
 
 function Data = segmentMultiContract(S)
 
-% This is your full segmentation logic from loadData_multiContract
-% (unchanged, just wrapped)
-% I will paste it exactly as-is:
+% segmentation logic from loadData_multiContract
+
 
 if isfield(S,'Data')
     force  = S.Data{1}(:,1);
