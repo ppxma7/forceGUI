@@ -28,6 +28,8 @@ end
 %% ------------------------------------------------------------
 % STANDARD FIELD RESOLUTION
 %% ------------------------------------------------------------
+% This bit is really key
+% Based on the template, it unpacks the file 
 fieldNames = fieldnames(template.fields);
 
 for ii = 1:numel(fieldNames)
@@ -43,11 +45,20 @@ for ii = 1:numel(fieldNames)
     match = find(isfield(S, aliases), 1);
 
     if ~isempty(match)
-        dataStruct.(key) = S.(aliases{match});
+        val = S.(aliases{match});
+        % make sure data is vectorized
+        if isnumeric(val) || islogical(val)
+            val = val(:);
+        end
+        dataStruct.(key) = val;
+        %dataStruct.(key) = S.(aliases{match});
     else
-        % Use fallback
         if isfield(template.fallbacks, key)
-            dataStruct.(key) = template.fallbacks.(key)(S);
+            val = template.fallbacks.(key)(S);
+            if isnumeric(val) || islogical(val)
+                val = val(:);
+            end
+            dataStruct.(key) = val;
         else
             dataStruct.(key) = [];
         end

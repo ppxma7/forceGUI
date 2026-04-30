@@ -8,7 +8,7 @@ template.fields = struct( ...
 
 template.fallbacks = struct( ...
     'Data', @(S) [], ...
-    'fs',   @(S) getfield(S,'SamplingFrequency',[]), ...
+    'fs',   @getFs, ...
     'Time', @(S) [] ...
     );
 
@@ -102,4 +102,15 @@ for ii = 1:regions.NumObjects
     legend
 end
 figure, plot(forceFilt)
+end
+
+
+function fs = getFs(S)
+    if isfield(S,'fsamp')
+        fs = S.fsamp;
+    elseif isfield(S,'SamplingFrequency')
+        fs = S.SamplingFrequency;
+    else
+        fs = 2000;
+    end
 end
