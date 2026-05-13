@@ -61,7 +61,7 @@ plateauMask = bwareaopen(above, minDuration);
 regions = bwconncomp(plateauMask);
 
 baseline = 0.1 * max(forceFilt);
-padding  = round(0.5 * fs);
+padding  = round(1.5 * fs); % change this for longer tails - easier to draw ramp
 
 
 figure
