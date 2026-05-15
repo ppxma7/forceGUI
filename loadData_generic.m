@@ -23,6 +23,7 @@ end
 %% ------------------------------------------------------------
 if isfield(template.special, 'extract')
     dataStruct = template.special.extract(S);
+    return
 end
 
 %% ------------------------------------------------------------

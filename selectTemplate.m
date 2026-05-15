@@ -32,8 +32,12 @@ if strcmp(mode, 'Single Channel')
         template = template_single();
     end
 
-else
+elseif strcmp(mode, 'Multi Channel')
     % Multi-channel TRAP
     template = template_multi();
+
+elseif strcmp(mode, 'Dual Channel')
+    % Dual-channel TRAP
+    template = template_dual();
 end
 end
