@@ -68,7 +68,7 @@ elseif isfield(S,'Data') && size(S.Data{1},2) == 2
     % --- CASE 2: Newer files with named fields ---
 elseif ~isfield(S,'Data')
     dataStruct = struct();
-    return
+    %return
 
 
 % else % last ditch backup
