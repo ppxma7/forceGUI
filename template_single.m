@@ -65,10 +65,20 @@ elseif isfield(S,'Data') && size(S.Data{1},2) == 2
     dataStruct.Force  = block(:,1);
     dataStruct.Target    = block(:,2);
 
+elseif isfield(S,'Data') && size(S.Data{1},2) == 1
+
+    if iscell(S.Data)
+        block = S.Data{1};
+    else
+        block = S.Data;
+    end
+    dataStruct.Force  = block(:,1);
+
+
     % --- CASE 2: Newer files with named fields ---
 elseif ~isfield(S,'Data')
     dataStruct = struct();
-    %return
+  
 
 
 % else % last ditch backup
