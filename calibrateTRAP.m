@@ -45,16 +45,16 @@ function [forceN, targetN] = calibrateTRAP(raw, rig, channel, targetRaw, Calib)
 
     switch channel
         case 'left'
-            forceN  = raw * scaleL; % * 9.81;
-            targetN = targetRaw * scaleL; % * 9.81;
+            forceN  = raw * scaleL * 9.81;
+            targetN = targetRaw * scaleL * 9.81;
 
         case 'right'
-            forceN  = raw * scaleR; % * 9.81;
-            targetN = targetRaw * scaleR; % * 9.81;
+            forceN  = raw * scaleR * 9.81;
+            targetN = targetRaw * scaleR * 9.81;
 
         case 'bilateral'
-            forceN  = (raw(:,1) * scaleL + raw(:,2) * scaleR); % * 9.81;
-            targetN = (targetRaw * scaleL + targetRaw * scaleR); % * 9.81;
+            forceN  = (raw(:,1) * scaleL + raw(:,2) * scaleR) * 9.81;
+            targetN = (targetRaw * scaleL + targetRaw * scaleR) * 9.81;
     end
 end
 
