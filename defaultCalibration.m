@@ -7,8 +7,12 @@ function Calib = defaultCalibration()
     Calib.ankle.Left.M  = 0.0938;
     Calib.ankle.Left.b  = 0.0206;
 
-    Calib.ankle.Right.M = 0.1282;
-    Calib.ankle.Right.b = 0.027019;
+    % Calib.ankle.Right.M = 0.1282;
+    % Calib.ankle.Right.b = 0.027019;
+    
+    % Mollie
+    Calib.ankle.Right.M = 135.92;
+    Calib.ankle.Right.b = 0.06250374;
 
     % --- HAND (simple scale factor) ---
     Calib.hand.Left.scale  = 1.070;
