@@ -3,6 +3,13 @@ function [forceN, targetN] = calibrateTRAP(raw, rig, channel, targetRaw, Calib)
     rig     = lower(rig);
     channel = lower(channel);
 
+    % --- NO CALIBRATION: pass through as-is ---
+    if strcmp(rig, 'none')
+        forceN  = raw;
+        targetN = targetRaw;
+        return
+    end
+
     % --- ANKLE: linear regression (M + b) ---
     if strcmp(rig, 'ankle')
 
