@@ -21,8 +21,19 @@ else
 end
 
 % --- Extract channels ---
-dataStruct.ForceL = test(:,1);
-dataStruct.ForceR = test(:,2);
+
+nAUX = sum(contains(S.Description, 'AUX', 'IgnoreCase', true));
+
+if nAUX == 2
+    % Nikki/canapi format: cols 1+2 are raw force
+    dataStruct.ForceL  = test(:,1);
+    dataStruct.ForceR  = test(:,2);
+elseif nAUX == 3
+    % 3-channel format: L, R, Bi ? untested
+    dataStruct.ForceL  = test(:,1);
+    dataStruct.ForceR  = test(:,2);
+    dataStruct.ForceBi = test(:,3);
+end
 
 
 % --- Target detection ---

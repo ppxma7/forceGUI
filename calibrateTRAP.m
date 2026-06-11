@@ -6,36 +6,31 @@ function [forceN, targetN] = calibrateTRAP(raw, rig, channel, targetRaw, Calib)
     % --- ANKLE: linear regression (M + b) ---
     if strcmp(rig, 'ankle')
 
-        % Extract calibration values from table
-        M = Calib.ankle.(capitalize(channel)).M;
-        b = Calib.ankle.(capitalize(channel)).b;
-
         switch channel
             case 'left'
+                M = Calib.ankle.Left.M;
+                b = Calib.ankle.Left.b;
                 forceN  = ((raw - b) / M) * 9.81;
                 targetN = ((targetRaw - b) / M) * 9.81;
 
             case 'right'
+                M = Calib.ankle.Right.M;
+                b = Calib.ankle.Right.b;
                 forceN  = ((raw - b) / M) * 9.81;
                 targetN = ((targetRaw - b) / M) * 9.81;
 
             case 'bilateral'
-                % Left
                 ML = Calib.ankle.Left.M;
                 bL = Calib.ankle.Left.b;
-                forceL  = ((raw(:,1) - bL) / ML) * 9.81;
-                targetL = ((targetRaw - bL) / ML) * 9.81;
-
-                % Right
                 MR = Calib.ankle.Right.M;
                 bR = Calib.ankle.Right.b;
+                forceL  = ((raw(:,1) - bL) / ML) * 9.81;
                 forceR  = ((raw(:,2) - bR) / MR) * 9.81;
+                targetL = ((targetRaw - bL) / ML) * 9.81;
                 targetR = ((targetRaw - bR) / MR) * 9.81;
-
                 forceN  = forceL + forceR;
                 targetN = targetL + targetR;
         end
-
         return
     end
 
