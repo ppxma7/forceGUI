@@ -14,4 +14,11 @@ You will also need these MATLAB toolboxes. These can be downloaded by clicking o
 - Statistics and Machine Learning Toolbox
 
 
+## Demos
 
+<p align="center">
+  <img src="demos/trapdemo.gif" width="200" />
+  <img src="demos/mcondemo.gif" width="200" />
+  <img src="demos/multicontractrapdemo.gif" width="200" />
+  <img src="demos/colordemo.gif" width="200" />
+</p>
