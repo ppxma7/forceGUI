@@ -5,8 +5,14 @@ function [forceN, targetN] = calibrateTRAP(raw, rig, channel, targetRaw, Calib)
 
     % --- NO CALIBRATION: pass through as-is ---
     if strcmp(rig, 'none')
-        forceN  = raw;
-        targetN = targetRaw;
+        if strcmp(channel, 'bilateral') && size(raw, 2) == 2
+            % otherwise bilat will plot two lines later
+            forceN  = raw(:,1) + raw(:,2);
+            targetN = targetRaw;
+        else
+            forceN  = raw;
+            targetN = targetRaw;
+        end
         return
     end
 

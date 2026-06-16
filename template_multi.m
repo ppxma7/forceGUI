@@ -120,20 +120,22 @@ else
 
     % --- Target detection ---
     targCols = find(contains(S.Description, 'requested'));
-    candidateTargets = forceData(:, targCols);
-    colHasData = any(candidateTargets ~= 0, 1);
-    correctIdx = targCols(find(colHasData, 1));
+    if isempty(targCols)
+        disp('No target columns found... continuing...');
+    else
+        candidateTargets = forceData(:, targCols);
+        colHasData = any(candidateTargets ~= 0, 1);
+        correctIdx = targCols(find(colHasData, 1));
 
-    if isempty(correctIdx)
-        error('No valid target column found.');
+        if isempty(correctIdx)
+            disp('No valid target column found... continuing...');
+        else
+            dataStruct.Target  = forceData(:, correctIdx);
+            dataStruct.TargetL  = scaleTarget(dataStruct.Target, dataStruct.ForceL);
+            dataStruct.TargetR  = scaleTarget(dataStruct.Target, dataStruct.ForceR);
+            dataStruct.TargetBi = scaleTarget(dataStruct.Target, dataStruct.ForceBi);
+        end
     end
-
-    dataStruct.Target = forceData(:, correctIdx);
-
-    % --- Target scaling ---
-    dataStruct.TargetL  = scaleTarget(dataStruct.Target, dataStruct.ForceL);
-    dataStruct.TargetR  = scaleTarget(dataStruct.Target, dataStruct.ForceR);
-    dataStruct.TargetBi = scaleTarget(dataStruct.Target, dataStruct.ForceBi);
 
 end
 % --- Time vector ---
