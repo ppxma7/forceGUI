@@ -32,8 +32,18 @@ if isfield(S,'Data')
     target = S.Data{1}(:,4);
     fs = S.SamplingFrequency;
 else
+    % make more generic
+    %ch = fn{contains(fn, 'Ch1')};
+
     fn = fieldnames(S);
-    ch = fn{contains(fn, 'Ch1')};
+    % find any field named Ch<number>, e.g. Ch1, Ch4, Ch12, etc.
+    chCandidates = fn(~cellfun('isempty', regexp(fn, 'Ch\d+$')));
+    if isempty(chCandidates)
+        error('No channel fields matching Ch<number> found in file');
+    end
+    % pick the FIRST matching channel (or change logic if you want a specific one)
+    ch = chCandidates{1};
+    
     F = S.(ch);
     force = F.values;
     fs = 1 / F.interval;
