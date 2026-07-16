@@ -14,6 +14,11 @@ if strcmp(analysis, 'TRAP_multi')
     return
 end
 
+if strcmp(analysis, 'MVC')
+    template = template_mvc();
+    return
+end
+
 if strcmp(mode, 'Single Channel')
 
     if strcmp(rig, 'Derby Chair')

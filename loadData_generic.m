@@ -68,7 +68,9 @@ end
 %% ------------------------------------------------------------
 % SAMPLING FREQUENCY
 %% ------------------------------------------------------------
-if isfield(S,'SamplingFrequency')
+if isfield(dataStruct,'fs') && ~isempty(dataStruct.fs)
+    % already set by special.extract — leave it alone
+elseif isfield(S,'SamplingFrequency')
     dataStruct.fs = S.SamplingFrequency;
 elseif isfield(S,'fsamp')
     dataStruct.fs = S.fsamp;
@@ -81,7 +83,9 @@ end
 %% ------------------------------------------------------------
 % TIME 
 %% ------------------------------------------------------------
-if isfield(S,'Time')
+if isfield(dataStruct,'Time') && ~isempty(dataStruct.Time)
+    % already set by special.extract — leave it alone
+elseif isfield(S,'Time')
     if iscell(S.Time)
         dataStruct.Time = S.Time{1};
     else
