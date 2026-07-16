@@ -22,9 +22,9 @@ function dataStruct = extractMVC(S)
 % row 1 = bilat (Force_Sum_raw), row 2 = left, row 3 = right
 if isfield(S,'signal_mvc') && isfield(S.signal_mvc,'auxiliary')
     aux = S.signal_mvc.auxiliary;
-    % dataStruct.ForceBi = aux(1,:)';   % real recorded bilateral channel — for display
-    % dataStruct.ForceL  = aux(2,:)';
-    % dataStruct.ForceR  = aux(3,:)';
+    dataStruct.ForceBi = aux(1,:)';   % real recorded bilateral channel — for display
+    dataStruct.ForceL  = aux(2,:)';
+    dataStruct.ForceR  = aux(3,:)';
 
     nRows = size(aux,1);
 
@@ -39,6 +39,7 @@ if isfield(S,'signal_mvc') && isfield(S.signal_mvc,'auxiliary')
         dataStruct.ForceL  = f;
         dataStruct.ForceR  = f;
         dataStruct.ForceBi = f;
+        dataStruct.isSingleChannelMVC = true;
     end
 
 elseif isfield(S,'Force')
