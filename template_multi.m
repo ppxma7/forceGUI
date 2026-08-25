@@ -124,7 +124,8 @@ else
         disp('No target columns found... continuing...');
     else
         candidateTargets = forceData(:, targCols);
-        colHasData = any(candidateTargets ~= 0, 1);
+        %colHasData = any(candidateTargets ~= 0, 1);
+        colHasData = logical(std(candidateTargets)); % do this instead - looks for variation in signal, not just if its zero
         correctIdx = targCols(find(colHasData, 1));
 
         if isempty(correctIdx)
