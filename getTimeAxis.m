@@ -28,6 +28,12 @@ function x = getTimeAxis(s, n)
         tVec = sTarget.(tpresent{1});
         if ~isempty(tVec)
             tVec = tVec(:)'; % Force 1D row vector
+
+            % --- ZERO-BASELINE FIX HERE ---
+            tVec = tVec - tVec(1); % Shifts array starting point to 0.0s
+            % ------------------------------
+
+            
             if length(tVec) >= n
                 x = tVec(1:n);
             else
