@@ -31,4 +31,8 @@ function Calib = defaultCalibration()
     %Calib.derby.scale = 0.1823;
     Calib.derby.scale = 208;
 
+    % --- CUSTOM ---
+    Calib.custom.Left.scale  = 1;
+    Calib.custom.Right.scale = 1;
+
 end
