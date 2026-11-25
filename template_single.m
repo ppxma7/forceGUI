@@ -2,14 +2,25 @@ function template = template_single()
 
 template.type = "single";
 
+A = forceAliases();
+
 % Only use aliases for simple cases
+% template.fields = struct( ...
+%     'Force',  {{'Force','Torque','F','ref_signal','FORCE'}}, ...
+%     'Acq',    {{'Acq','Acquisition'}}, ...
+%     'Perf',   {{'Perf','Performance'}}, ...
+%     'Target', {{'Target','requested','Desired'}}, ...
+%     'fs',     {{'fs','fsamp','Fs','SamplingFrequency','SampleRate'}}, ...
+%     'Time',   {{'Time','time','t','TimeVector'}} ...
+%     );
+
 template.fields = struct( ...
-    'Force',  {{'Force','Torque','F','ref_signal','FORCE'}}, ...
+    'Force',  {A.Force}, ...
     'Acq',    {{'Acq','Acquisition'}}, ...
     'Perf',   {{'Perf','Performance'}}, ...
-    'Target', {{'Target','requested','Desired'}}, ...
-    'fs',     {{'fs','fsamp','Fs','SamplingFrequency','SampleRate'}}, ...
-    'Time',   {{'Time','time','t','TimeVector'}} ...
+    'Target', {A.Target}, ...
+    'fs',     {A.fs}, ...
+    'Time',   {A.Time} ...
     );
 
 template.fallbacks = struct( ...
@@ -97,22 +108,29 @@ if isfield(dataStruct,'Target') && ~isempty(dataStruct.Target)
 end
 
 % --- Time ---
-if isfield(S,'Time')
-    if iscell(S.Time)
-        dataStruct.Time = S.Time{1};
-    else
-        dataStruct.Time = S.Time;
-    end
-else
-    dataStruct.Time = [];
-end
+% if isfield(S,'Time')
+%     if iscell(S.Time)
+%         dataStruct.Time = S.Time{1};
+%     else
+%         dataStruct.Time = S.Time;
+%     end
+% else
+%     dataStruct.Time = [];
+% end
 
 % --- Sampling frequency ---
-if isfield(S,'SamplingFrequency')
-    dataStruct.fs = S.SamplingFrequency;
-else
-    dataStruct.fs = 2000;
-end
+% if isfield(S,'SamplingFrequency')
+%     dataStruct.fs = S.SamplingFrequency;
+% else
+%     dataStruct.fs = 2000;
+% end
+
+% --- Time and sampling frequency ---
+A = forceAliases();
+t = pickField(S, A.Time, []);
+if iscell(t), t = t{1}; end
+dataStruct.Time = t;
+dataStruct.fs   = pickField(S, A.fs, 2000);
 
 % --- Description ---
 if isfield(S,'Description')

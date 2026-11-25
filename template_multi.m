@@ -29,14 +29,26 @@ function dataStruct = extractMulti(S)
 
 % --- Resolve Data block ---
 
-if isfield(S, 'Force')
-    % New format: Force directly in S (7×60000)
-    forceData = S.Force';          % transpose to 60000×7
+
+A  = forceAliases();
+fk = find(isfield(S, A.Force), 1);
+tk = find(isfield(S, A.Target), 1);
+newFormat = ~isempty(fk);
+
+if newFormat
+    forceData = S.(A.Force{fk})';
     targetVec = [];
-    if isfield(S, 'Target')
-        targetVec = S.Target(:);
-    end
+    if ~isempty(tk), targetVec = S.(A.Target{tk})(:); end
 elseif isfield(S, 'Data')
+
+% if isfield(S, 'Force')
+%     % New format: Force directly in S (7×60000)
+%     forceData = S.Force';          % transpose to 60000×7
+%     targetVec = [];
+%     if isfield(S, 'Target')
+%         targetVec = S.Target(:);
+%     end
+% elseif isfield(S, 'Data')
 
     if iscell(S.Data)
         forceData  = S.Data{1};
@@ -70,7 +82,8 @@ for ii = 1:nCols
 end
 
 %% --- Extract channels ---
-if isfield(S, 'Force')
+
+if newFormat %isfield(S, 'Force')
     % New 7-channel format (raw only, cols 1-3)
     dataStruct.ForceL  = forceData(:,1);
     dataStruct.ForceR  = forceData(:,2);
@@ -93,7 +106,7 @@ if isfield(S, 'Force')
         dataStruct.TargetR  = dataStruct.Target * mvc;
         dataStruct.TargetBi = dataStruct.Target * mvc;
     else
-        keyboard % dont think we need this
+        %keyboard % dont think we need this
         dataStruct.TargetL  = scaleTarget(dataStruct.Target, dataStruct.ForceL);
         dataStruct.TargetR  = scaleTarget(dataStruct.Target, dataStruct.ForceR);
         dataStruct.TargetBi = scaleTarget(dataStruct.Target, dataStruct.ForceBi);
@@ -151,8 +164,13 @@ else
 end
 
 % --- Sampling frequency ---
-if isfield(S,'SamplingFrequency')
-    dataStruct.fs = S.SamplingFrequency;
+
+fsk = find(isfield(S, A.fs), 1);
+if ~isempty(fsk)
+    dataStruct.fs = S.(A.fs{fsk});
+
+% if isfield(S,'SamplingFrequency')
+%     dataStruct.fs = S.SamplingFrequency;
 elseif isfield(S,'signal') && isfield(S.signal,'fsamp')
     dataStruct.fs = S.signal.fsamp;
 else

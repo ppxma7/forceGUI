@@ -1,6 +1,6 @@
 function bands = computeSpectralBands(forceTrace, fs)
 % COMPUTESPECTRALBANDS Low-pass filters force trace at 35 Hz (3rd-order Butterworth),
-% computes Welch's PSD for Delta, Theta, Alpha, and Beta bands, and generates
+% computes Welch's PSD for Low (1–5 Hz), Mid (5–15 Hz) and High (15–30 Hz), and generates
 % high-resolution STFT data for Time-Frequency-Signal (TFS) plotting.
 %
 % Notes
@@ -9,10 +9,9 @@ function bands = computeSpectralBands(forceTrace, fs)
 
 % Default output structure (Gamma removed)
 bands = struct(...
-    'Delta', NaN, ...
-    'Theta', NaN, ...
-    'Alpha', NaN, ...
-    'Beta',  NaN, ...
+    'Low', NaN, ...
+    'Mid', NaN, ...
+    'High',  NaN, ...
     'Total', NaN, ...
     't',     [],  ... % Time vector for force trace
     'filtF', [],  ... % Low-pass filtered force trace
@@ -59,10 +58,10 @@ end
 % 3. Frequency Step Size & Band Indices
 df = f(2) - f(1); % Frequency step resolution (Hz)
 
-deltaIdx = (f >= 0.5) & (f < 4);
-thetaIdx = (f >= 4)   & (f < 8);
-alphaIdx = (f >= 8)   & (f <= 13);
-betaIdx  = (f > 13)   & (f <= 30);
+% band indices:
+lowIdx  = (f >= 1)  & (f < 5);
+midIdx  = (f >= 5)  & (f < 15);
+highIdx = (f >= 15) & (f <= 30);
 
 % Total Power across the analyzed range (N^2)
 totalPower = sum(pxx) * df;
@@ -70,22 +69,21 @@ totalPower = sum(pxx) * df;
 % --- Absolute Integrated Band Power (N^2) ---
 % Instead of taking the average power density,  sum up all the Power Spectral Density 
 % (PSD) values within that band and multiply by the frequency resolution step
-if any(deltaIdx), bands.Delta = sum(pxx(deltaIdx)) * df; else, bands.Delta = 0; end
-if any(thetaIdx), bands.Theta = sum(pxx(thetaIdx)) * df; else, bands.Theta = 0; end
-if any(alphaIdx), bands.Alpha = sum(pxx(alphaIdx)) * df; else, bands.Alpha = 0; end
-if any(betaIdx),  bands.Beta  = sum(pxx(betaIdx))  * df; else, bands.Beta  = 0; end
+% absolute power (three lines instead of four):
+if any(lowIdx),  bands.Low  = sum(pxx(lowIdx))  * df; else, bands.Low  = 0; end
+if any(midIdx),  bands.Mid  = sum(pxx(midIdx))  * df; else, bands.Mid  = 0; end
+if any(highIdx), bands.High = sum(pxx(highIdx)) * df; else, bands.High = 0; end
+
 bands.Total = totalPower;
 
 % --- Relative Band Power (%) ---
 % proportional share that a single frequency band contributes to the total force spectrum across all frequencies.
 if totalPower > 0
-    bands.Delta_Rel = (bands.Delta / totalPower) * 100;
-    bands.Theta_Rel = (bands.Theta / totalPower) * 100;
-    bands.Alpha_Rel = (bands.Alpha / totalPower) * 100;
-    bands.Beta_Rel  = (bands.Beta  / totalPower) * 100;
+    bands.Low_Rel  = (bands.Low  / totalPower) * 100;
+    bands.Mid_Rel  = (bands.Mid  / totalPower) * 100;
+    bands.High_Rel = (bands.High / totalPower) * 100;
 else
-    bands.Delta_Rel = 0; bands.Theta_Rel = 0;
-    bands.Alpha_Rel = 0; bands.Beta_Rel  = 0;
+    bands.Low_Rel = 0; bands.Mid_Rel = 0; bands.High_Rel = 0;
 end
 
 % 4. High-Resolution TFS Spectrogram

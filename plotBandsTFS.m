@@ -42,9 +42,13 @@ function plotBandsTFS(bands, axForce, axSpec)
 
     % --- Overlay Frequency Band Boundaries ---
     hold(ax2, 'on');
-    boundaries = [4, 8, 13, 30]; % Delta/Theta, Theta/Alpha, Alpha/Beta, Beta boundary
-    labels     = {'Delta (0.5-4Hz)', 'Theta (4-8Hz)', 'Alpha (8-13Hz)', 'Beta (13-30Hz)'};
-    labelYPos  = [2, 6, 10.5, 21.5];
+    % boundaries = [4, 8, 13, 30]; % Delta/Theta, Theta/Alpha, Alpha/Beta, Beta boundary
+    % labels     = {'Delta (0.5-4Hz)', 'Theta (4-8Hz)', 'Alpha (8-13Hz)', 'Beta (13-30Hz)'};
+    % labelYPos  = [2, 6, 10.5, 21.5];
+
+    boundaries = [1, 5, 15, 30];
+    labels     = {'Low (1-5 Hz)', 'Mid (5-15 Hz)', 'High (15-30 Hz)'};
+    labelYPos  = [3, 10, 22];
 
     xEnd = bands.t(end);
 

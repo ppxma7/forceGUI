@@ -9,7 +9,7 @@ function dataStruct = loadData_generic(filepath, template)
 % here load
 S = load(filepath);
 dataStruct = struct();
-
+A = forceAliases();
 %% ------------------------------------------------------------
 % MULTI-CONTRACT (TRAP_multi)
 %% ------------------------------------------------------------
@@ -46,6 +46,9 @@ for ii = 1:numel(fieldNames)
 
     if ~isempty(match)
         val = S.(aliases{match});
+        if strcmp(key,'Force') && isnumeric(val) && min(size(val)) > 1
+            error('Force is a %dx%d matrix. For multi-channel files set Mode = Multi Channel.', size(val,1), size(val,2));
+        end
         % make sure data is vectorized
         if isnumeric(val) || islogical(val)
             val = val(:);
@@ -65,20 +68,37 @@ for ii = 1:numel(fieldNames)
     end
 end
 
+if isfield(dataStruct,'Force') && isempty(dataStruct.Force)
+    error('No force variable found. Looked for: %s', strjoin(A.Force, ', '));
+end
+
 %% ------------------------------------------------------------
 % SAMPLING FREQUENCY
 %% ------------------------------------------------------------
+
+fsk = find(isfield(S, A.fs), 1);
 if isfield(dataStruct,'fs') && ~isempty(dataStruct.fs)
-    % already set by special.extract — leave it alone
-elseif isfield(S,'SamplingFrequency')
-    dataStruct.fs = S.SamplingFrequency;
-elseif isfield(S,'fsamp')
-    dataStruct.fs = S.fsamp;
+    % already set by special.extract
+elseif ~isempty(fsk)
+    dataStruct.fs = S.(A.fs{fsk});
 elseif isfield(template.fallbacks,'fs')
     dataStruct.fs = template.fallbacks.fs(S);
 else
     dataStruct.fs = 2000;
 end
+
+% 
+% if isfield(dataStruct,'fs') && ~isempty(dataStruct.fs)
+%     % already set by special.extract — leave it alone
+% elseif isfield(S,'SamplingFrequency')
+%     dataStruct.fs = S.SamplingFrequency;
+% elseif isfield(S,'fsamp')
+%     dataStruct.fs = S.fsamp;
+% elseif isfield(template.fallbacks,'fs')
+%     dataStruct.fs = template.fallbacks.fs(S);
+% else
+%     dataStruct.fs = 2000;
+% end
 
 %% ------------------------------------------------------------
 % TIME 
