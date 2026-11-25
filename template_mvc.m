@@ -17,51 +17,60 @@ template.special = struct( ...
 
 end
 
+
 function dataStruct = extractMVC(S)
 
-% row 1 = bilat (Force_Sum_raw), row 2 = left, row 3 = right
-if isfield(S,'signal_mvc') && isfield(S.signal_mvc,'auxiliary')
+% Preferred: direct force fields
+if isfield(S,'ForceL') && isfield(S,'ForceR')
+
+    dataStruct.ForceL  = S.ForceL(:);
+    dataStruct.ForceR  = S.ForceR(:);
+
+    if isfield(S,'ForceBi')
+        dataStruct.ForceBi = S.ForceBi(:);
+    else
+        dataStruct.ForceBi = dataStruct.ForceL + dataStruct.ForceR;
+    end
+
+% Legacy: signal_mvc structure
+elseif isfield(S,'signal_mvc') && isfield(S.signal_mvc,'auxiliary')
+
     aux = S.signal_mvc.auxiliary;
-    % dataStruct.ForceBi = aux(1,:)';   % real recorded bilateral channel — for display
-    % dataStruct.ForceL  = aux(2,:)';
-    % dataStruct.ForceR  = aux(3,:)';
 
-    nRows = size(aux,1);
-
-    if nRows >= 3
-        % row 1 = bilat, row 2 = left, row 3 = right
+    if size(aux,1) >= 3
         dataStruct.ForceBi = aux(1,:)';
         dataStruct.ForceL  = aux(2,:)';
         dataStruct.ForceR  = aux(3,:)';
     else
-        % single-channel MVC file - no L/R/Bi distinction available
         f = aux(1,:)';
+        dataStruct.ForceBi = f;
         dataStruct.ForceL  = f;
         dataStruct.ForceR  = f;
-        dataStruct.ForceBi = f;
     end
 
+% Legacy: single force channel
 elseif isfield(S,'Force')
-    keyboard
-    % legacy/broken single-channel file - fix in recorder
-    dataStruct.ForceL  = S.Force(:);
-    dataStruct.ForceR  = S.Force(:);
-    dataStruct.ForceBi = [S.Force(:), S.Force(:)];
+
+    f = S.Force(:);
+
+    dataStruct.ForceBi = f;
+    dataStruct.ForceL  = f;
+    dataStruct.ForceR  = f;
 
 else
-    error('extractMVC: cannot find force channel');
+    error('extractMVC: Cannot find force channels');
 end
 
-% --- Sampling frequency ---
-if isfield(S,'signal_mvc') && isfield(S.signal_mvc,'fsamp')
-    fs = S.signal_mvc.fsamp;
-elseif isfield(S,'fsamp')
+% Sampling frequency
+if isfield(S,'fsamp')
     fs = S.fsamp;
+elseif isfield(S,'signal_mvc') && isfield(S.signal_mvc,'fsamp')
+    fs = S.signal_mvc.fsamp;
 else
     fs = 2000;
 end
 
-dataStruct.fs     = fs;
+dataStruct.fs = fs;
 dataStruct.Target = [];
 
 end

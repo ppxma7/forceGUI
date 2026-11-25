@@ -128,11 +128,13 @@ save('P01_TRAP.mat', 'Force', 'Target', 'mvc_value', 'SamplingFrequency')
 **C. MVC** (Analysis = MVC)
 
 ```matlab
-signal_mvc.auxiliary = [forceBi; forceL; forceR];   % 3×N: row 1 = Bilateral, 2 = Left, 3 = Right
-signal_mvc.fsamp     = 2000;
+ForceBi = forceBi(:);   % Bilateral force
+ForceL  = forceL(:);    % Left force
+ForceR  = forceR(:);    % Right force
+fsamp   = 2000;         % Sampling frequency (Hz)
 ```
 
-A single-row `auxiliary` is accepted and used for all three channels.
+`ForceBi`, `ForceL` and `ForceR` are saved as separate force vectors. If only one force channel is available, save it as `Force` instead.
 
 **D. TRAP_multi** (several contractions in one trace; no target)
 
