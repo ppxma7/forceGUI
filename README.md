@@ -1,6 +1,10 @@
 # forceGUI
 
-A MATLAB App used for EMG force trace analysis. Please see forceGUI_walkthrough.md for a detailed guide. 
+A MATLAB App used for EMG force trace analysis. 
+
+Please see [forceGUI_walkthrough.md](forceGUI_walkthrough.md) for a detailed guide. 
+
+Also see [forceGUI_metrics_explained.md](forceGUI_metrics_explained.md) for an explanation of the metrics used. 
 
 # Prerequisites:
 
