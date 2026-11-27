@@ -251,27 +251,27 @@ Press **Compute Metrics**. If results are already in the table you must press **
 
 ### 9.1 TRAP metrics (computed on the plateau)
 
-| Column                                 | Meaning                                                                                                                        |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `SteadyMean`, `SteadySTD`, `SteadyCoV` | Mean, SD and coefficient of variation (SD/mean × 100) over the whole plateau                                                   |
-| `CoV2s`, `CoV5s` (+ `Mean…`, `STD…`)   | Statistics for the **steadiest window**: the window of that length with the lowest CoV (a sliding search over the plateau)     |
-| `ScaledCoV`                            | CoV after min–max scaling the plateau to 0–1                                                                                   |
-| `CoVminus1`                            | CoV excluding the first second of the plateau                                                                                  |
-| `MeanYank`, `RMSYank`                  | Mean absolute and RMS of the derivative of force (N/s), i.e. how jerky the force is                                            |
-| `ApEn`, `SampEn`                       | Approximate / sample entropy (m = 2, r = 0.1 × SD) on the plateau **downsampled by 20**                                        |
-| `DFA57`                                | Detrended fluctuation analysis scaling exponent using 57 log-spaced box sizes (4 samples up to N/4), on the downsampled signal |
-| `MinForce`, `MaxForce`                 | Range of the plateau                                                                                                           |
+| Column                                                | Meaning                                                                                                                                                                                    |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SteadyMean`, `SteadySTD`, `SteadyCoV`                | Mean, SD and coefficient of variation (SD/mean × 100) over the whole plateau                                                                                                               |
+| `CoV2s`, `CoV5s` (+ `Mean…`, `STD…`)                  | Statistics for the **steadiest window**: the window of that length with the lowest CoV (a sliding search over the plateau)                                                                 |
+| `WorstCoV2s`, `WorstCoV5s`,`CoVratio2s`, `CoVratio5s` | Highest CoV of any sliding window of that length on the plateau (the least steady window). Best CoV / worst CoV for that window length (0–1; closer to 1 means more consistent steadiness) |
+| `ScaledCoV`                                           | CoV after min–max scaling the plateau to 0–1                                                                                                                                               |
+| `CoVminus1`                                           | CoV excluding the first second of the plateau                                                                                                                                              |
+| `MeanYank`, `RMSYank`                                 | Mean absolute and RMS of the derivative of force (N/s), i.e. how jerky the force is                                                                                                        |
+| `ApEn`, `SampEn`                                      | Approximate / sample entropy (m = 2, r = 0.1 × SD) on the plateau **downsampled by 20**                                                                                                    |
+| `DFA57`                                               | Detrended fluctuation analysis scaling exponent using 57 log-spaced box sizes (4 samples up to N/4), on the downsampled signal                                                             |
+| `MinForce`, `MaxForce`                                | Range of the plateau                                                                                                                                                                       |
 
-**Custom CoV windows:** the **CoV win** field takes a MATLAB-style list of window lengths in seconds, e.g. `5 2` (the default if blank) or `10 3`. Column names follow the length (`CoV10s`, `Mean10s`, `STD10s`). Use whole numbers: a fractional window such as `2.5` produces an invalid field name and an error.
+**Custom CoV windows:** the **CoV win** field takes a MATLAB-style list of window lengths in seconds, e.g. `5 2` (the default if blank) or `10 3`. Column names follow the length (`CoV10s`, `Mean10s`, `STD10s`). Use whole numbers: a fractional window such as `2.5` produces an invalid field name and an error. `WorstCoV…` and `CoVratio…` columns follow the same naming (e.g. `WorstCoV10s`, `CoVratio10s`). A window longer than the plateau gives NaN. 
 
 **Spectral bands** (also computed for TRAP): the plateau is low-passed at 35 Hz, then Welch's method (1 s Hann window, 50% overlap) gives:
 
-| Band  | Range    |
-| ----- | -------- |
-| Delta | 0.5–4 Hz |
-| Theta | 4–8 Hz   |
-| Alpha | 8–13 Hz  |
-| Beta  | 13–30 Hz |
+| Band   | Range    |
+| ------ | -------- |
+| Low    | 1-5 Hz   |
+| Medium | 5-15 Hz  |
+| High   | 15-30 Hz |
 
 You get absolute band power (`PSD_Delta` … `PSD_Beta`, in N²), `PSD_Total`, and relative power in % (`PSD_*_Rel`). A figure shows the filtered force on top and a high-resolution time–frequency spectrogram below with band boundaries marked.
 
@@ -327,7 +327,7 @@ Results are stored per contraction, and **Reset** clears only the current contra
 
 **Export Results** saves two files in the *same folder as the loaded file*, without overwriting anything (a timestamp is added):
 
-- `<name>_<yyyyMMdd_HHmmss>_forceresults.csv`: the metrics table. Columns are ordered `Code, SteadyMean, SteadySTD, SteadyCoV, CoV2s, CoV5s, CoVminus1, MeanYank, RMSYank, ApEn, SampEn, DFA57, MinForce, MaxForce, Mean/STD windows, Up/Down ramp metrics`, followed by any remaining columns (spectral bands, LR coupling, etc.).
+- `<name>_<yyyyMMdd_HHmmss>_forceresults.csv`: the metrics table. Columns are ordered `Code, SteadyMean, SteadySTD, SteadyCoV, CoV2s, CoV5s, CoVminus1, MeanYank, RMSYank, ApEn, SampEn, DFA57, MinForce, MaxForce, Mean/STD windows, Up/Down ramp metrics`, followed by any remaining columns (worst-window CoV and CoV ratios, spectral bands, LR coupling, etc.).
 - `<name>_<timestamp>_fullstate.mat`: everything needed to reproduce the analysis (data, filtered traces, segments, metrics, results).
 
 TRAP_multi adds `_con<N>_<label>` to the name, one file per contraction. Redo exports add `_redo`.
@@ -361,7 +361,7 @@ A standalone script (not part of the GUI) that stitches the exported CSVs togeth
 2. Run it and choose the folder of exported results.
 3. It reads every `*_forceresults*.csv`, keeps only the columns expected for that mode (`modeCols` at the top), and writes `combined_<mode>_<timestamp>.csv` to the same folder.
 
-Files missing any expected column are **skipped and listed** at the end. Extra columns (for example the PSD band columns) are dropped, so edit `modeCols` if you want them. The `MCON` list includes `LRlag`/`LRcorr`, so single-channel MCON exports will be skipped.
+Files missing any expected column are **skipped and listed** at the end. Extra columns (for example the PSD band columns) are dropped, so edit `modeCols` if you want them. The `MCON` list includes `LRlag`/`LRcorr`, so single-channel MCON exports will be skipped. The `TRAP` list includes `WorstCoV5s`, `WorstCoV2s`, `CoVratio5s` and `CoVratio2s`, so exports made before these metrics were added, or with other CoV windows, will be skipped.
 
 ---
 

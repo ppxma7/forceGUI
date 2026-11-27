@@ -24,6 +24,16 @@
 - *How:* a sliding window of the stated length moves along the plateau. The window with the lowest CoV is selected, and its CoV, mean and SD are reported. Window lengths come from the **CoV win** field (default 5 and 2 s).
 - *Why:* the whole-plateau CoV is contaminated by slow drift and by settling after the ramp. The steadiest window reflects the participant's best sustained control, and different window lengths separate fast fluctuations from slow drift. Because it picks the best window, it is biased low, so use the same window lengths across all participants.
 
+**WorstCoV2s, WorstCoV5s (%)**
+
+- *How:* the same sliding window as above, but the window with the highest CoV is selected.
+- *Why:* reflects the participant's least steady stretch of the plateau.
+
+**CoVratio2s, CoVratio5s (unitless, 0–1)**
+
+- *How:* best-window CoV divided by worst-window CoV for the same window length (e.g. CoV5s / WorstCoV5s).
+- *Why:* indexes how consistent steadiness was across the plateau. Values near 1 mean the best and worst windows were similar; values near 0 mean steadiness varied widely. It says nothing about overall steadiness, so report it alongside CoV. It depends on window and plateau length (it equals 1 if only one window fits), so keep these comparable across participants. The worst window is sensitive to brief disturbances and to settling at the start of the plateau.
+
 **CoVminus1 (%)**
 
 - *How:* CoV of the plateau after discarding its first second.
@@ -39,7 +49,6 @@
 - *How:* yank is the first derivative of the filtered force. MeanYank is the mean of its absolute value, and RMSYank is its root mean square.
 - *Why:* indexes how rapidly force is changing. Yank tells you how quickly force is ramping up (positive) or dropping off (negative). Peak positive yank shows how rapidly force can be produced, as in jumping or reacting to a perturbation.
   Negative yank shows how quickly force is reduced. During a constant-force hold, larger RMS yank means faster fluctuations or corrections.
-  
 
 **MinForce and MaxForce (N)**
 
@@ -132,5 +141,3 @@ A time–frequency plot (STFT) is also shown, for seeing how the spectrum change
 [4] Peng CK, Havlin S, Stanley HE, Goldberger AL; Quantification of scaling exponents and crossover phenomena in nonstationary heartbeat time series. *Chaos*. 1995;5(1):82-7. https://doi.org/10.1063/1.166141
 
 [5] Cabral, H.V., Inglis, J.G., Cudicio, A., Cogliati, M., Orizio, C., Yavuz, U.S. and Negro, F. (2024), Muscle contractile properties directly influence shared synaptic inputs to spinal motor neurons. *J Physiol*, 602: 2855-2872. https://doi.org/10.1113/JP286078
-
-
