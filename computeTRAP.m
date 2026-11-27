@@ -29,6 +29,8 @@ end
 window_sizes = window_times * fs;
 
 lowest_cov_data = cell(1, numel(window_sizes));
+best_cov  = nan(1, numel(window_sizes));   % new
+worst_cov = nan(1, numel(window_sizes));   % new
 
 for w = 1:numel(window_sizes)
     window_size = window_sizes(w);
@@ -46,7 +48,8 @@ for w = 1:numel(window_sizes)
         cov_values(j) = std(window_data) / mean(window_data) * 100;
     end
 
-    [~, min_index] = min(cov_values);
+    [best_cov(w), min_index] = min(cov_values);
+    worst_cov(w) = max(cov_values);
     lowest_cov_data{w} = forceFilt(min_index:min_index+window_size-1);
 end
 
@@ -128,6 +131,8 @@ for w = 1:numel(window_times)
         metrics.(sprintf('std_%ss',  fname)) = NaN;
         metrics.(sprintf('CoV_%ss',  fname)) = NaN;
     end
+    metrics.(sprintf('worstCoV_%ss', fname))  = worst_cov(w);
+    metrics.(sprintf('ratioCoV_%ss', fname))  = best_cov(w) / worst_cov(w);
 end
 
 % ----------------------------

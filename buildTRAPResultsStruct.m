@@ -16,6 +16,8 @@ S.SteadyCoV  = M.steady_CoV;
 % S.CoV5s = M.CoV_5s;
 % S.CoV2s = M.CoV_2s;
 
+fprintf('\nTRAP Metrics:\n'); 
+
 allFields = fieldnames(M);
 covFields = allFields(startsWith(allFields, 'CoV_') & ~strcmp(allFields, 'CoV_minus1'));
 for i = 1:numel(covFields)
@@ -23,7 +25,10 @@ for i = 1:numel(covFields)
     S.(sprintf('CoV%s',  tag)) = M.(sprintf('CoV_%s',  tag));
     S.(sprintf('Mean%s', tag)) = M.(sprintf('mean_%s', tag));
     S.(sprintf('STD%s',  tag)) = M.(sprintf('std_%s',  tag));
+
     fprintf('  CoV%s:      %.3f %%\n', tag, M.(sprintf('CoV_%s', tag)));
+    fprintf('  WorstCoV%s: %.3f %%\n', tag, M.(sprintf('worstCoV_%s', tag)));
+    fprintf('  CoVratio%s: %.3f\n',    tag, M.(sprintf('ratioCoV_%s', tag)));
 end
 
 
@@ -51,7 +56,13 @@ if isfield(M,'LRlag')
     S.LRcorr   =  M.LRcorr;
 end
 
-fprintf('\nTRAP Metrics:\n');
+% New window metrics (added last so they appear at the end of the table)
+for i = 1:numel(covFields)
+    tag = extractAfter(covFields{i}, 'CoV_');
+    S.(sprintf('WorstCoV%s', tag)) = M.(sprintf('worstCoV_%s', tag));
+    S.(sprintf('CoVratio%s', tag)) = M.(sprintf('ratioCoV_%s', tag));
+end
+
 fprintf('  SteadyMean: %.3f\n', M.steady_mean);
 fprintf('  SteadySTD:  %.3f\n', M.steady_std);
 fprintf('  SteadyCoV:  %.3f %%\n', M.steady_CoV);
